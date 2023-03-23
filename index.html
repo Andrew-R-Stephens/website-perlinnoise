@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- This first -->
+    <script>const exports = {};</script>
+    <script src="./ts-built/Permutation.js"></script>
+    <script src="./ts-built/Perlin.js"></script>
+    <script src="./ts-built/HeatmapCanvas.js"></script>
+    <script src="./ts-built/World.js"></script>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Perlin Noise App</title>
+    </head>
+
+    <body>
+        <div style="width:fit-content; background-color: black; margin:auto; display: flex; border-radius: 16px">
+            <canvas style ="padding: 16px;margin:auto" id="canvas" width="326" height="326"></canvas>
+        </div>
+        <!-- Then you can call it -->
+        <script type="text/javascript">
+            let worldSize = 256, worldHeight = 1, permutationSize = 1000;
+
+            let world = new World(worldSize, worldHeight);
+            Perlin(Permutation(permutationSize).table, world);
+
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d");
+            const heatmapCanvas = HeatmapCanvas(ctx, world, worldSize, 6);
+
+            heatmapCanvas.redraw(ctx, world);
+        </script>
+    </body>
+
+</html>
