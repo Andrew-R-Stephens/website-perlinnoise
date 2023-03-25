@@ -2,11 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Permutation = void 0;
 var Permutation = function (tableDimension) {
-    var data = { table: undefined };
     function init(tableDimension) {
         var defaultTable = buildDefault(tableDimension);
         console.log("Default Permutation", defaultTable);
-        data.table = randomizeDefaultPermutation(defaultTable);
+        var newTable = randomizeDefaultPermutation(defaultTable);
+        console.log("Randomized Permutation", newTable);
+        return newTable;
     }
     function buildDefault(n) {
         var min = 0;
@@ -18,17 +19,24 @@ var Permutation = function (tableDimension) {
         return orderedArr;
     }
     function randomizeDefaultPermutation(orderedArr) {
+        var _a;
         var newArr = new Array(orderedArr.length);
-        var lastItem = 0;
-        for (var i = 0; i < newArr.length; i++) {
-            var pullIndex = Math.floor(Math.random() * orderedArr.length);
-            newArr[i] = lastItem = orderedArr[pullIndex];
-            orderedArr.splice(pullIndex, 1);
+        orderedArr.map(function (item, index) {
+            newArr[index] = item;
+        });
+        var currentIndex = newArr.length, randomIndex;
+        // While there remain elements to shuffle.
+        while (currentIndex != 0) {
+            // Pick a remaining element.
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            // And swap it with the current element.
+            _a = [
+                newArr[randomIndex], newArr[currentIndex]
+            ], newArr[currentIndex] = _a[0], newArr[randomIndex] = _a[1];
         }
         return newArr;
     }
-    init(tableDimension);
-    console.log("Randomized Permutation", data.table);
-    return data;
+    return init(tableDimension);
 };
 exports.Permutation = Permutation;

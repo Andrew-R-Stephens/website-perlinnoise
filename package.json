@@ -3,13 +3,11 @@
   "version": "1.0.0",
   "dependencies": {
     "nodemon": "^2.0.21",
-    "tsc": "^2.0.4",
     "typescript": "^5.0.2"
   },
   "scripts": {
     "build": "npx tsc",
     "start": "index.html",
     "dev": "nodemon index.ts"
-
   }
 }

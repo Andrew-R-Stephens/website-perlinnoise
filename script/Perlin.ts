@@ -2,21 +2,13 @@ import {World} from "./World";
 
 export const Perlin = (permutation:Array<number>, world:World) => {
 
-    let data = {mapSize: 0, noise: undefined};
-
-    function init(defaultPermutation: Array<number>):Array<number> {
-        defaultPermutation.forEach((item)=>{
-            permutation[item] = item;
-        })
-
-        return permutation;
-    }
+    let data = {mapSize: 0, noise:new Array<Array<number>> };
 
     function noise(x: number, y: number, z: number): number {
         // Find unit cube that contains point
-        let xi = Math.floor(x) & 255
-        let yi = Math.floor(y) & 255
-        let zi = Math.floor(z) & 255
+        let xi = Math.floor(x) & (permutation.length-1)
+        let yi = Math.floor(y) & (permutation.length-1)
+        let zi = Math.floor(z) & (permutation.length-1)
 
         // Find relative x, y, z of point in cube
         let xx = x - Math.floor(x)
@@ -79,15 +71,19 @@ export const Perlin = (permutation:Array<number>, world:World) => {
         let lowest = 0.0
 
         let mapSize = world.worldSize
-        let scale = mapSize*.01
+        let scale = mapSize*.0001
 
+        let output = new Array<Array<number>>;
         for (let i = 0; i < mapSize; i++) {
+            output.push(new Array<number>())
             for (let j = 0; j < mapSize; j++) {
                 let randomNoise = Math.abs(noise(
                     scale*j,
                     scale*i,
-                    scale * world.worldHeight
+                    scale
                 ))
+                output[i].push(randomNoise)
+
                 if(randomNoise > highest)
                     highest = randomNoise
                 if(randomNoise < lowest)
@@ -95,17 +91,10 @@ export const Perlin = (permutation:Array<number>, world:World) => {
             }
         }
 
-        let output = [[], []];
-        for (let i = 0; i < mapSize; i++) {
-            output.push(new Array<number>())
-            for (let j = 0; j < mapSize; j++) {
-                let randomNoise = Math.abs(noise(
-                    scale*j,
-                    scale*i,
-                    scale*world.worldHeight
-                ))/(highest-lowest)
-
-                output[i].push(randomNoise)
+        let maxDifference = (highest-lowest);
+        for (let i = 0; i < output.length; i++) {
+            for (let j = 0; j < output[i].length; j++) {
+                output[i][j] /= maxDifference
             }
         }
 
@@ -114,17 +103,7 @@ export const Perlin = (permutation:Array<number>, world:World) => {
         world.build(data.noise, {lowest, highest});
     }
 
-    init(permutation);
+    console.log("Building perlin")
     build();
 
-}
-
-export function combine(noiseA:[[], []], noiseB:[[], []]): Array<Array<number>> {
-    let noise = [[], []]
-    for(let y = 0; y < noiseA.length; y++) {
-        for(let x=0; x < noiseA[y].length; x++) {
-            noise[y][x] = (noiseA[y][x] + noiseB[y][x])*.5;
-        }
-    }
-    return noise;
 }

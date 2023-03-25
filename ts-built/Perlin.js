@@ -1,19 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.combine = exports.Perlin = void 0;
+exports.Perlin = void 0;
 var Perlin = function (permutation, world) {
-    var data = { mapSize: 0, noise: undefined };
-    function init(defaultPermutation) {
-        defaultPermutation.forEach(function (item) {
-            permutation[item] = item;
-        });
-        return permutation;
-    }
+    var data = { mapSize: 0, noise: new Array };
     function noise(x, y, z) {
         // Find unit cube that contains point
-        var xi = Math.floor(x) & 255;
-        var yi = Math.floor(y) & 255;
-        var zi = Math.floor(z) & 255;
+        var xi = Math.floor(x) & (permutation.length - 1);
+        var yi = Math.floor(y) & (permutation.length - 1);
+        var zi = Math.floor(z) & (permutation.length - 1);
         // Find relative x, y, z of point in cube
         var xx = x - Math.floor(x);
         var yy = y - Math.floor(y);
@@ -50,38 +44,29 @@ var Perlin = function (permutation, world) {
         var highest = 0.0;
         var lowest = 0.0;
         var mapSize = world.worldSize;
-        var scale = mapSize * .01;
+        var scale = mapSize * .0001;
+        var output = new Array;
         for (var i = 0; i < mapSize; i++) {
+            output.push(new Array());
             for (var j = 0; j < mapSize; j++) {
-                var randomNoise = Math.abs(noise(scale * j, scale * i, scale * world.worldHeight));
+                var randomNoise = Math.abs(noise(scale * j, scale * i, scale));
+                output[i].push(randomNoise);
                 if (randomNoise > highest)
                     highest = randomNoise;
                 if (randomNoise < lowest)
                     lowest = randomNoise;
             }
         }
-        var output = [[], []];
-        for (var i = 0; i < mapSize; i++) {
-            output.push(new Array());
-            for (var j = 0; j < mapSize; j++) {
-                var randomNoise = Math.abs(noise(scale * j, scale * i, scale * world.worldHeight)) / (highest - lowest);
-                output[i].push(randomNoise);
+        var maxDifference = (highest - lowest);
+        for (var i = 0; i < output.length; i++) {
+            for (var j = 0; j < output[i].length; j++) {
+                output[i][j] /= maxDifference;
             }
         }
         data = { mapSize: mapSize, noise: output };
         world.build(data.noise, { lowest: lowest, highest: highest });
     }
-    init(permutation);
+    console.log("Building perlin");
     build();
 };
 exports.Perlin = Perlin;
-function combine(noiseA, noiseB) {
-    var noise = [[], []];
-    for (var y = 0; y < noiseA.length; y++) {
-        for (var x = 0; x < noiseA[y].length; x++) {
-            noise[y][x] = (noiseA[y][x] + noiseB[y][x]) * .5;
-        }
-    }
-    return noise;
-}
-exports.combine = combine;

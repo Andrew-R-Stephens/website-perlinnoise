@@ -18,14 +18,17 @@
         </div>
         <!-- Then you can call it -->
         <script type="text/javascript">
-            let worldSize = 256, worldHeight = 1, permutationSize = 1000;
+            let worldSize = 200, worldHeight = 384, permutationSize = 256;
 
             let world = new World(worldSize, worldHeight);
-            Perlin(Permutation(permutationSize).table, world);
+
+            let permutation = Permutation(permutationSize)
+            console.log("Using permutation")
+            Perlin(permutation, world)
 
             const canvas = document.getElementById("canvas");
             const ctx = canvas.getContext("2d");
-            const heatmapCanvas = HeatmapCanvas(ctx, world, worldSize, 6);
+            const heatmapCanvas = HeatmapCanvas(ctx, world, worldSize, 4);
 
             heatmapCanvas.redraw(ctx, world);
         </script>

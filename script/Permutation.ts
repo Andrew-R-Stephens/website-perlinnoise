@@ -1,12 +1,14 @@
 
 export const Permutation = (tableDimension:number) => {
 
-    let data = {table: undefined}
-
     function init(tableDimension:number) {
         let defaultTable = buildDefault(tableDimension)
         console.log("Default Permutation", defaultTable)
-        data.table = randomizeDefaultPermutation(defaultTable);
+
+        let newTable = randomizeDefaultPermutation(defaultTable);
+        console.log("Randomized Permutation", newTable)
+
+        return newTable;
     }
 
     function buildDefault(n:number):Array<number> {
@@ -21,19 +23,29 @@ export const Permutation = (tableDimension:number) => {
         return orderedArr;
     }
 
-    function randomizeDefaultPermutation(orderedArr: Array<number>):Array<number> {
-        const newArr = new Array<number>(orderedArr.length);
-        for(let i = 0; i < newArr.length; i++) {
-            let pullIndex = Math.floor(Math.random() * orderedArr.length);
-            newArr[i] = orderedArr[pullIndex];
-            orderedArr.splice(pullIndex, 1);
+    function randomizeDefaultPermutation(orderedArr: Array<number>): Array<number> {
+        let newArr = new Array<number>(orderedArr.length);
+        orderedArr.map((item:number, index:number)=>{
+            newArr[index] = item;
+        })
+
+        let currentIndex = newArr.length, randomIndex;
+
+        // While there remain elements to shuffle.
+        while (currentIndex != 0) {
+
+            // Pick a remaining element.
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+
+            // And swap it with the current element.
+            [newArr[currentIndex], newArr[randomIndex]] = [
+                newArr[randomIndex], newArr[currentIndex]];
         }
+
         return newArr;
     }
 
-    init(tableDimension);
-    console.log("Randomized Permutation", data.table)
-
-    return data;
+    return init(tableDimension)
 
 }

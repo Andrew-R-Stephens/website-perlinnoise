@@ -19,7 +19,7 @@ export class World {
         for(let y = 0; y < noise.length; y++) {
             this.expandH();
             for(let x = 0; x < noise[y].length; x++) {
-                this.expandW(new Chunk(noise[x][y]));
+                this.expandW(new Chunk(noise[y][x]));
             }
         }
     }

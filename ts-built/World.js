@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.World = void 0;
-
 var World = /** @class */ (function () {
     function World(worldSize, worldHeight) {
         this.world = new Array();
@@ -18,7 +17,7 @@ var World = /** @class */ (function () {
         for (var y = 0; y < noise.length; y++) {
             this.expandH();
             for (var x = 0; x < noise[y].length; x++) {
-                this.expandW(new Chunk(noise[x][y]));
+                this.expandW(new Chunk(noise[y][x]));
             }
         }
     };
