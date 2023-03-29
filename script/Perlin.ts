@@ -2,9 +2,9 @@ import {World} from "./World";
 
 export const Perlin = (permutation:Array<number>, world:World) => {
 
-    let data = {mapSize: 0, noise:new Array<Array<number>> };
+    let data = {mapSize: 0, noise:new Array<Array<number>>};
 
-    function noise(x: number, y: number, z: number): number {
+    function noise(x: number, y: number, z:number): number {
         // Find unit cube that contains point
         let xi = Math.floor(x) & (permutation.length-1)
         let yi = Math.floor(y) & (permutation.length-1)
@@ -71,7 +71,7 @@ export const Perlin = (permutation:Array<number>, world:World) => {
         let lowest = 0.0
 
         let mapSize = world.worldSize
-        let scale = mapSize *.0001
+        let scale = mapSize * .0001
 
         let output = new Array<Array<number>>;
         for (let i = 0; i < mapSize; i++) {
@@ -80,9 +80,9 @@ export const Perlin = (permutation:Array<number>, world:World) => {
                 let randomNoise =
                     Math.abs(
                         noise(
-                        scale*j,
-                        scale*i,
-                        scale)
+                            scale*j,
+                            scale*i,
+                            scale)
                     )
                 output[i].push(randomNoise)
 

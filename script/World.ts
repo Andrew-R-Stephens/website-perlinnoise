@@ -16,6 +16,7 @@ export class World {
         this.min = heightData.min
         this.max = heightData.max;
 
+        this.world = new Array<Array<Chunk>>();
         for(let y = 0; y < noise.length; y++) {
             this.expandH();
             for(let x = 0; x < noise[y].length; x++) {

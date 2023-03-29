@@ -1,14 +1,10 @@
 
-export const Permutation = (tableDimension:number) => {
+export function Permutation(tableDimension:number) {
 
     function init(tableDimension:number) {
         let defaultTable = buildDefault(tableDimension)
-        console.log("Default Permutation", defaultTable)
-
         let newTable = randomizeDefaultPermutation(defaultTable);
-        console.log("Randomized Permutation", newTable)
-
-        return newTable;
+        return newTable
     }
 
     function buildDefault(n:number):Array<number> {

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Permutation = void 0;
-var Permutation = function (tableDimension) {
+function Permutation(tableDimension) {
     function init(tableDimension) {
         var defaultTable = buildDefault(tableDimension);
         console.log("Default Permutation", defaultTable);
@@ -38,5 +38,5 @@ var Permutation = function (tableDimension) {
         return newArr;
     }
     return init(tableDimension);
-};
+}
 exports.Permutation = Permutation;

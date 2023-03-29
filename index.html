@@ -14,45 +14,112 @@
     </head>
 
     <body>
-        <div style="margin:auto; display: inline-block">
-            <div style="width:fit-content; background-color: black; margin:auto; display: flex; border-radius: 16px; padding: 16px;">
-                <canvas style ="margin:auto" id="canvas" width="326" height="326"></canvas>
-                <span id="tooltiptext" class="tooltip" style="visibility: hidden"></span>
-            </div>
-            <div style="width:fit-content; margin:16px auto 0 auto; display: flex;">
-                <div style="display: block">
-                    <div style="display: flex">
-                        <label style="margin: auto">Noise Layer</label>
+        <div style="display: flex; margin: auto">
+            <div style="margin:auto; display: inline-block">
+
+                <div style="width:fit-content; background-color: black; margin:auto; display: flex; border-radius: 16px; padding: 16px;">
+                    <canvas style ="margin:auto" id="canvas" width="1" height="1"></canvas>
+                    <span id="tooltiptext" class="tooltip" style="visibility: hidden"></span>
+                </div>
+
+                <div style="width:fit-content; margin:16px auto 0 auto; display: block;">
+                    <div style="display: block">
+                        <button onclick="rerollPermutation()">Re-roll Permutation</button>
                     </div>
-                    <div class="slidecontainer">
-                        <label id="sliderMin" style="margin: auto">0</label>
-                        <input type="range" min="0" max="100" value="50" class="slider" id="myRange">
-                        <label id="sliderMax" style="margin: auto"></label>
+
+                    <div style="display: block; margin: 16px">
+                        <div class="slidecontainer">
+                            <input id="checkboxDrawFull" style="margin: auto" checked="checked" onchange="setDrawFull(this.checked)" type="checkbox"/>
+                        </div>
+                        <label style="margin: auto">Show Full Map</label>
                     </div>
-                    <div style="display:flex" >
-                        <label id="rangeOut" style="margin: auto; z-index: 100"></label>
+
+                    <div style="display: block; margin: 16px">
+                        <label style="margin: auto">Layer Slicing</label>
+                        <div class="slidecontainer">
+                            <select style="margin: auto" onchange="setSliceMethod(this.options[this.selectedIndex].value)">
+                                <option value="0">Show Exact Layer</option>
+                                <option value="1">Include Lower Layers</option>
+                            </select>
+                        </div>
                     </div>
+
+                    <div style="display: block; margin: 16px">
+                        <div style="display: flex">
+                            <label style="margin: auto">Max Layers</label>
+                        </div>
+                        <div class="slidecontainer">
+                            <label id="heightMin" style="margin: auto">0</label>
+                            <input type="range" min="1" max="3000" value="1500" class="slider" id="heightSet">
+                            <label id="heightMax" style="margin: auto">3000</label>
+                        </div>
+                        <div style="display:flex" >
+                            <label id="heightOut" style="margin: auto">to do</label>
+                        </div>
+                    </div>
+
+                    <div style="display: block; margin: 16px">
+                        <div style="display: flex">
+                            <label style="margin: auto">Noise Layer</label>
+                        </div>
+                        <div class="slidecontainer">
+                            <label id="sliderMin" style="margin: auto">0</label>
+                            <input type="range" min="0" max="100" value="50" class="slider" id="heightViewed">
+                            <label id="sliderMax" style="margin: auto"></label>
+                        </div>
+                        <div style="display:flex" >
+                            <label id="rangeOut" style="margin: auto"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="width:fit-content; height: fit-content; margin:auto; display: block; border-radius: 16px; padding: 16px;">
+                    <h3 style="margin: auto">Permutation</h3>
+                    <textarea readonly id="permutationText" style="width:50vw; height: 100px;max-width:50vw; max-height: 100px; min-width:50vw; min-height: 100px;"></textarea>
                 </div>
             </div>
         </div>
+        <script type="text/javascript">
+            function setDrawFull(slider) {
+                heatmapCanvas.drawFull = slider
+                heatmapCanvas.redraw(ctx, world);
+            }
 
-        <!-- Then you can call it -->
+            function setSliceMethod(slice) {
+                console.log(slice)
+                heatmapCanvas.slice = slice !== '0'
+                heatmapCanvas.redraw(ctx, world);
+            }
+            function rerollPermutation() {
+                permutation = Permutation(permutationSize);
+                Perlin(permutation, world)
+                heatmapCanvas.redraw(ctx, world);
+                displayPermutation();
+            }
+            function displayPermutation() {
+                permutationText.innerText = permutation.toString();
+            }
+        </script>
+
         <script type="text/javascript">
             let tooltipSpan = document.getElementById('tooltiptext');
-            let slider = document.getElementById("myRange");
+            let slider = document.getElementById("heightViewed");
             let output = document.getElementById("rangeOut");
             let sliderMax = document.getElementById("sliderMax");
+            let permutationText = document.getElementById("permutationText");
             const canvas = document.getElementById("canvas");
 
             const ctx = canvas.getContext("2d");
 
-            let worldSize = 200, worldHeight = 100, permutationSize = 512, viewScale = 4;
+            let worldSize = 150, worldHeight = 10, permutationSize = 128, viewScale = 4;
             let sliderPosition = worldHeight * .5;
             let world = new World(worldSize, worldHeight);
             let permutation = Permutation(permutationSize);
             Perlin(permutation, world)
             const heatmapCanvas = HeatmapCanvas(ctx, world, worldSize, viewScale);
-            heatmapCanvas.slice = true;
+            displayPermutation()
+
+            heatmapCanvas.slice = false;
             slider.max = worldHeight;
             slider.step = 1;
             slider.value = Math.round(worldHeight * .5)
@@ -75,6 +142,8 @@
             }
 
             slider.oninput = function() {
+                heatmapCanvas.drawFull = false;
+                document.getElementById("checkboxDrawFull").checked = heatmapCanvas.drawFull;
                 sliderPosition = parseFloat(this.value);
                 output.innerText = Math.round(sliderPosition)
                 heatmapCanvas.drawHeight = parseInt(output.innerText)
@@ -82,6 +151,7 @@
             }
 
         </script>
+
     </body>
 
 </html>

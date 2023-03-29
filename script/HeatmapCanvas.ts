@@ -3,10 +3,13 @@ import {World} from "./World";
 let s = 1;
 let scale = 1;
 
+let drawFull:boolean = true;
 let drawHeight:number = undefined;
 let slice:boolean = false;
 
 let worldMiddleHeight:number = undefined;
+
+let canRedrawFrame:boolean = true;
 
 export const HeatmapCanvas = (ctx, world:World, worldSize, mult) => {
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
@@ -21,6 +24,10 @@ export const HeatmapCanvas = (ctx, world:World, worldSize, mult) => {
 
 function redraw(ctx: any, world:World): boolean {
 
+    if(!canRedrawFrame){
+        return false;
+    }
+
     function pixelHeat(minimum:number, maximum:number, value:number) {
         const ratio = 2 * (value - minimum) / (maximum - minimum)
         const b = Math.max(0, 255 * (1 - ratio))
@@ -31,10 +38,11 @@ function redraw(ctx: any, world:World): boolean {
         const r = 0
         const g = value >= .1 ? 255 / (maximum-minimum) * value : 0
         */
-        /*let b = 255 / (maximum-minimum) * value
+        /*
+        let b = 255 / (maximum-minimum) * value
         const r = b
         const g = b
-*/
+        */
         return {r, g, b}
     }
 
@@ -46,20 +54,22 @@ function redraw(ctx: any, world:World): boolean {
             let v = Math.floor(Math.abs(world.world[y][x].data * world.worldHeight));
             let color = pixelHeat(0, world.worldHeight, v);
             ctx.fillStyle = `rgb(${color.r}, ${color.g}, ${color.b})`;
-            if(drawHeight === undefined) {
+            if(drawFull) {
                 ctx.fillRect(Math.floor(x * s * scale), Math.floor(y * s * scale), Math.floor(s * scale), Math.floor(s * scale));
             } else {
                 if(slice) {
                     if (v <= drawHeight) {
-                        let color = pixelHeat(0, world.worldHeight, Math.min(v, drawHeight));
+                        color = pixelHeat(0, world.worldHeight, Math.min(v, drawHeight));
                         ctx.fillStyle = `rgb(${color.r}, ${color.g}, ${color.b})`;
                     } else {
-                        let color = pixelHeat(0, world.worldHeight, Math.min(v, drawHeight));
+                        color = pixelHeat(0, world.worldHeight, Math.min(v, drawHeight));
                         ctx.fillStyle = `rgb(${color.r}, ${color.g}, ${color.b})`;
                     }
                     ctx.fillRect(Math.floor(x * s * scale), Math.floor(y * s * scale), Math.floor(s * scale), Math.floor(s * scale));
                 } else {
-                    if (v == drawHeight) {
+                    if (v >= drawHeight) {
+                        color = pixelHeat(0, world.worldHeight, drawHeight);
+                        ctx.fillStyle = `rgb(${color.r}, ${color.g}, ${color.b})`;
                         ctx.fillRect(Math.floor(x * s * scale), Math.floor(y * s * scale), Math.floor(s * scale), Math.floor(s * scale));
                     }
                 }
@@ -67,7 +77,7 @@ function redraw(ctx: any, world:World): boolean {
         }
     }
 
-    return true;
+    return canRedrawFrame = true;
 }
 
 export default redraw;

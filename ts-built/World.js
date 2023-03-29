@@ -14,6 +14,7 @@ var World = /** @class */ (function () {
     World.prototype.build = function (noise, heightData) {
         this.min = heightData.min;
         this.max = heightData.max;
+        this.world = new Array();
         for (var y = 0; y < noise.length; y++) {
             this.expandH();
             for (var x = 0; x < noise[y].length; x++) {
