@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- This first -->
+
+    <link rel="stylesheet" href="./app.css">
     <script>const exports = {};</script>
     <script src="./ts-built/Permutation.js"></script>
     <script src="./ts-built/Perlin.js"></script>
@@ -13,24 +14,73 @@
     </head>
 
     <body>
-        <div style="width:fit-content; background-color: black; margin:auto; display: flex; border-radius: 16px">
-            <canvas style ="padding: 16px;margin:auto" id="canvas" width="326" height="326"></canvas>
+        <div style="margin:auto; display: inline-block">
+            <div style="width:fit-content; background-color: black; margin:auto; display: flex; border-radius: 16px; padding: 16px;">
+                <canvas style ="margin:auto" id="canvas" width="326" height="326"></canvas>
+                <span id="tooltiptext" class="tooltip" style="visibility: hidden"></span>
+            </div>
+            <div style="width:fit-content; margin:16px auto 0 auto; display: flex;">
+                <div style="display: block">
+                    <div style="display: flex">
+                        <label style="margin: auto">Noise Layer</label>
+                    </div>
+                    <div class="slidecontainer">
+                        <label id="sliderMin" style="margin: auto">0</label>
+                        <input type="range" min="0" max="100" value="50" class="slider" id="myRange">
+                        <label id="sliderMax" style="margin: auto"></label>
+                    </div>
+                    <div style="display:flex" >
+                        <label id="rangeOut" style="margin: auto; z-index: 100"></label>
+                    </div>
+                </div>
+            </div>
         </div>
+
         <!-- Then you can call it -->
         <script type="text/javascript">
-            let worldSize = 200, worldHeight = 384, permutationSize = 256;
-
-            let world = new World(worldSize, worldHeight);
-
-            let permutation = Permutation(permutationSize)
-            console.log("Using permutation")
-            Perlin(permutation, world)
-
+            let tooltipSpan = document.getElementById('tooltiptext');
+            let slider = document.getElementById("myRange");
+            let output = document.getElementById("rangeOut");
+            let sliderMax = document.getElementById("sliderMax");
             const canvas = document.getElementById("canvas");
+
             const ctx = canvas.getContext("2d");
-            const heatmapCanvas = HeatmapCanvas(ctx, world, worldSize, 4);
+
+            let worldSize = 200, worldHeight = 100, permutationSize = 512, viewScale = 4;
+            let sliderPosition = worldHeight * .5;
+            let world = new World(worldSize, worldHeight);
+            let permutation = Permutation(permutationSize);
+            Perlin(permutation, world)
+            const heatmapCanvas = HeatmapCanvas(ctx, world, worldSize, viewScale);
+            heatmapCanvas.slice = true;
+            slider.max = worldHeight;
+            slider.step = 1;
+            slider.value = Math.round(worldHeight * .5)
+            sliderMax.innerText = worldHeight+"";
+            output.innerText = slider.value; // Display the default slider value
 
             heatmapCanvas.redraw(ctx, world);
+
+            canvas.onmousemove = function (e) {
+                tooltipSpan.style.visibility = "visible"
+                let x = Math.floor(e.offsetX / viewScale),
+                    y = Math.floor(e.offsetY / viewScale);
+                tooltipSpan.innerText = x + ", " + y + " : " +  Math.floor(world.getZ(x, y) * (world.worldHeight));
+                tooltipSpan.style.top = e.y + 'px';
+                tooltipSpan.style.left = e.x + 'px';
+            };
+
+            canvas.onmouseleave = function (e) {
+                tooltipSpan.style.visibility = "hidden"
+            }
+
+            slider.oninput = function() {
+                sliderPosition = parseFloat(this.value);
+                output.innerText = Math.round(sliderPosition)
+                heatmapCanvas.drawHeight = parseInt(output.innerText)
+                heatmapCanvas.redraw(ctx, world);
+            }
+
         </script>
     </body>
 

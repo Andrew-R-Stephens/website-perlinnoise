@@ -32,6 +32,10 @@ export class World {
         this.world[this.world.length-1].push(c);
     }
 
+    public getZ(x:number, y:number):number {
+        return this.world[y][x].data;
+    }
+
 }
 
 class Chunk {

@@ -27,6 +27,9 @@ var World = /** @class */ (function () {
     World.prototype.expandW = function (c) {
         this.world[this.world.length - 1].push(c);
     };
+    World.prototype.getZ = function (x, y) {
+        return this.world[y][x].data;
+    };
     return World;
 }());
 exports.World = World;

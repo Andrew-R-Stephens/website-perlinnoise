@@ -71,17 +71,19 @@ export const Perlin = (permutation:Array<number>, world:World) => {
         let lowest = 0.0
 
         let mapSize = world.worldSize
-        let scale = mapSize*.0001
+        let scale = mapSize *.0001
 
         let output = new Array<Array<number>>;
         for (let i = 0; i < mapSize; i++) {
             output.push(new Array<number>())
             for (let j = 0; j < mapSize; j++) {
-                let randomNoise = Math.abs(noise(
-                    scale*j,
-                    scale*i,
-                    scale
-                ))
+                let randomNoise =
+                    Math.abs(
+                        noise(
+                        scale*j,
+                        scale*i,
+                        scale)
+                    )
                 output[i].push(randomNoise)
 
                 if(randomNoise > highest)
