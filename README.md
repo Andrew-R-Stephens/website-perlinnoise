@@ -14,8 +14,8 @@ Generates a random Permutation, uses the Permutation in computing Perlin Noise, 
 
 ## Languages
 <div style="display:float">
-  <img src="https://img.shields.io/badge/-CSS-1572B6?logo=css3&logoColor=white&style=bold"/>
-  <img src="https://img.shields.io/badge/-Javascript-F7DF1E?logo=javascript&logoColor=black&style=bold"/>
   <img src="https://img.shields.io/badge/-Typescript-3178C6?logo=typescript&logoColor=white&style=bold"/>
+  <img src="https://img.shields.io/badge/-Javascript-F7DF1E?logo=javascript&logoColor=black&style=bold"/>
   <img src="https://img.shields.io/badge/-HTML5-E34F26?logo=html5&logoColor=white&style=bold"/>
+  <img src="https://img.shields.io/badge/-CSS-1572B6?logo=css3&logoColor=white&style=bold"/>
 </div>
