@@ -10,7 +10,7 @@ Generates a random Permutation, uses the Permutation in computing Perlin Noise, 
 //TODO
 
 ## Credits
-[@TRITIUMNITR0X](https://github.com/TRITIUMNITR0X)
+[Andrew Stephens](https://github.com/Andrew-R-Stephens)
 
 ## Languages
 <div style="display:float">
